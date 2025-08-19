@@ -71,6 +71,8 @@ const lastRefreshDate = computed((): string => {
 
 const updateTheme = () => {
   isDarkMode.value = window.matchMedia('(prefers-color-scheme: dark)').matches
+  document.documentElement.classList.toggle('dark', isDarkMode.value) // Ensure dark mode is applied globally
+  document.documentElement.style.colorScheme = isDarkMode.value ? 'dark' : 'light' // Enhance OS-level theme support
 }
 
 onMounted(async () => {

@@ -81,10 +81,6 @@
   
   input[type='number'] {
     -moz-appearance: textfield;
-  }
-  
-  /* Additional style to ensure step buttons are hidden in Firefox */
-  input[type='number'] {
     -webkit-appearance: textfield;
     appearance: textfield;
   }
