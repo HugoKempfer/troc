@@ -39,7 +39,7 @@ const emit = defineEmits<{
   (e: 'update-currencies', currencies: string[]): void
 }>()
 
-const currencyToFlag = {
+const currencyToFlag: { [key: string]: string } = {
   USD: '🇺🇸',
   EUR: '🇪🇺',
   GBP: '🇬🇧',

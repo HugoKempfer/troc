@@ -36,7 +36,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import axios from 'axios'
 import CurrencyInput from './components/CurrencyInput.vue'
 import SettingsMenu from './components/SettingsMenu.vue'
