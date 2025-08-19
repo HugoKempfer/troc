@@ -2,6 +2,7 @@
 
 @import "tailwindcss";
 
+
 @layer base {
   body {
     font-family: 'Inter', sans-serif;
@@ -14,5 +15,11 @@
   }
   .border-lavender-400 {
     border-color: #D8BFD8;
+  }
+  .bg-lavender-100 {
+    background-color: #f0f0ff;
+  }
+  .bg-lavender-900 {
+    background-color: #4b0082;
   }
 }

@@ -3,8 +3,25 @@
     class="p-6 flex flex-col items-center min-h-screen w-screen"
     :class="['bg-gray-100', { 'dark:bg-gray-900': isDarkMode }]"
   >
-    <div class="text-sm text-gray-500 dark:text-gray-400 mb-2">Last refreshed: {{ lastRefreshDate }}</div>
-    <h1 class="text-3xl font-bold mb-8 text-gray-800 dark:text-gray-200 text-center">Troc - Currency Converter</h1>
+    <div class="text-sm text-gray-500 dark:text-gray-400 mb-2 text-center">Last refreshed: {{ lastRefreshDate }}</div>
+    <h1 class="text-3xl font-extrabold mb-8 text-gray-900 dark:text-gray-100 text-center">Troc - Currency Converter</h1>
+    <span
+      class="absolute top-6 right-6 text-2xl cursor-pointer text-gray-600 dark:text-gray-300"
+      @click="showSettings = !showSettings"
+      >⚙️</span>
+    <transition name="fade">
+      <div
+        v-if="showSettings"
+        class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+      >
+        <SettingsMenu
+          v-if="showSettings"
+          :selectedCurrencies="selectedCurrencies"
+          @close="showSettings = false"
+          @update-currencies="updateCurrencies"
+        />
+      </div>
+    </transition>
     <ul class="mx-auto w-full max-w-md space-y-6 flex-grow overflow-y-auto">
       <li v-for="currency in Object.keys(amounts)" :key="currency">
         <CurrencyInput
@@ -19,9 +36,10 @@
 </template>
 
 <script setup lang="ts">
+import { ref, computed, onMounted, watch } from 'vue'
 import axios from 'axios'
 import CurrencyInput from './components/CurrencyInput.vue'
-import { computed, onMounted, ref } from 'vue'
+import SettingsMenu from './components/SettingsMenu.vue'
 
 interface Rates {
   [key: string]: number
@@ -36,6 +54,8 @@ const amounts = ref<Amounts>({})
 const error = ref<string | null>(null)
 const lastFetchTimestamp = ref<number | null>(null)
 const isDarkMode = ref(false)
+const showSettings = ref(false)
+const selectedCurrencies = ref<string[]>([])
 
 const lastRefreshDate = computed((): string => {
   if (!lastFetchTimestamp.value) return 'Never'
@@ -84,17 +104,42 @@ onMounted(async () => {
     }
   }
 
-  // Initialize amounts with all currencies from rates
-  for (const currency in rates.value) {
-    amounts.value[currency] = amounts.value[currency] ?? 0
-  }
+  // Load or set default selected currencies
+  const savedCurrencies = localStorage.getItem('selectedCurrencies')
+  selectedCurrencies.value = savedCurrencies ? JSON.parse(savedCurrencies) : ['EUR', 'USD', 'KRW']
+  updateAmounts()
 })
+
+const updateCurrencies = (currencies: string[]) => {
+  selectedCurrencies.value = currencies
+  localStorage.setItem('selectedCurrencies', JSON.stringify(currencies))
+  updateAmounts()
+}
+
+const updateAmounts = () => {
+  const newAmounts: Amounts = {}
+  for (const currency of selectedCurrencies.value) {
+    newAmounts[currency] = amounts.value[currency] ?? 0
+  }
+  amounts.value = newAmounts
+}
 
 const handleAmountChange = (currency: string, value: number): void => {
   if (!rates.value[currency]) return
   const baseAmount = value / rates.value[currency] // Convert to EUR (base)
-  for (const curr in amounts.value) {
+  for (const curr of selectedCurrencies.value) {
     amounts.value[curr] = Number((baseAmount * rates.value[curr]).toFixed(2))
   }
 }
 </script>
+
+<style scoped>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+</style>
