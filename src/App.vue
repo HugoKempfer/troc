@@ -19,9 +19,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
 import axios from 'axios'
 import CurrencyInput from './components/CurrencyInput.vue'
+import { computed, onMounted, ref } from 'vue'
 
 interface Rates {
   [key: string]: number

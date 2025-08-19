@@ -7,7 +7,7 @@
         <input
           type="number"
           :value="amount"
-          @input="emit('update:amount', Number($event.target.value))"
+          @input="handleInput($event)"
           class="w-full text-2xl font-medium text-gray-800 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500 bg-transparent border-none focus:outline-none focus:ring-0 appearance-textfield"
           :placeholder="currency"
           step="0.01"
@@ -19,7 +19,8 @@
   </template>
   
   <script setup lang="ts">
-  defineProps<{
+  
+    defineProps<{
     currency: string
     amount: number
   }>()
@@ -28,7 +29,7 @@
     (e: 'update:amount', value: number): void
   }>()
   
-  const currencyToFlag = {
+  const currencyToFlag: { [key: string]: string } = {
     USD: '🇺🇸', // United States
     EUR: '🇪🇺', // European Union
     GBP: '🇬🇧', // United Kingdom
@@ -62,6 +63,13 @@
     THB: '🇹🇭', // Thailand
     ZAR: '🇿🇦'  // South Africa
   }
+  
+  const handleInput = (event: Event) => {
+    const target = event.target as HTMLInputElement
+    if (target) {
+      emit('update:amount', Number(target.value))
+    }
+  }
   </script>
   
   <style scoped>
@@ -71,7 +79,7 @@
     margin: 0;
   }
   
-  input[type='number'] {
+  /* input[type='number'] {
     -moz-appearance: textfield;
-  }
+  } */
   </style>
