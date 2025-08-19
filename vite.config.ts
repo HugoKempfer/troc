@@ -16,10 +16,10 @@ export default defineConfig({
         theme_color: '#ffffff',
         icons: [
           {
-            src: 'web-app-manifest-192x192.png',
+            src: 'maskable_icon_x192.png',
             sizes: '192x192',
             type: 'image/png',
-            purpose: 'any'
+            purpose: 'maskable'
           },
           {
             src: 'maskable_icon_x512.png',
