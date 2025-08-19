@@ -22,7 +22,7 @@ export default defineConfig({
             purpose: 'any'
           },
           {
-            src: 'web-app-manifest-512x512.png',
+            src: 'maskable_icon_x512.png',
             sizes: '512x512',
             type: 'image/png',
             purpose: 'any maskable'
