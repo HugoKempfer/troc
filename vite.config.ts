@@ -14,8 +14,33 @@ export default defineConfig({
         short_name: 'Troc',
         description: 'A simple open-source currency converter.',
         theme_color: '#ffffff',
-        icons: []
+        icons: [
+          {
+            src: 'web-app-manifest-192x192.png',
+            sizes: '192x192',
+            type: 'image/png'
+          },
+          {
+            src: 'web-app-manifest-512x512.png',
+            sizes: '512x512',
+            type: 'image/png'
+          }
+        ]
       },
+      workbox: {
+        runtimeCaching: [
+          {
+            urlPattern: /^https:\/\/api\.frankfurter\.app\/.*/,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'troc-rates',
+              expiration: {
+                maxAgeSeconds: 24 * 60 * 60 // 1 day
+              }
+            }
+          }
+        ]
+      }
     })
   ],
 })

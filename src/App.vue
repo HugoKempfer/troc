@@ -3,6 +3,7 @@
     class="p-6 flex flex-col items-center min-h-screen w-screen"
     :class="['bg-gray-100', { 'dark:bg-gray-900': isDarkMode }]"
   >
+    <img src="/troc-512.png" alt="Troc Logo" class="mb-4 w-16 h-16 object-contain" />
     <div class="text-sm text-gray-500 dark:text-gray-400 mb-2 text-center">Last refreshed: {{ lastRefreshDate }}</div>
     <h1 class="text-3xl font-extrabold mb-8 text-gray-900 dark:text-gray-100 text-center">Troc - Currency Converter</h1>
     <span
@@ -71,8 +72,8 @@ const lastRefreshDate = computed((): string => {
 
 const updateTheme = () => {
   isDarkMode.value = window.matchMedia('(prefers-color-scheme: dark)').matches
-  document.documentElement.classList.toggle('dark', isDarkMode.value) // Ensure dark mode is applied globally
-  document.documentElement.style.colorScheme = isDarkMode.value ? 'dark' : 'light' // Enhance OS-level theme support
+  document.documentElement.classList.toggle('dark', isDarkMode.value)
+  document.documentElement.style.colorScheme = isDarkMode.value ? 'dark' : 'light'
 }
 
 onMounted(async () => {
