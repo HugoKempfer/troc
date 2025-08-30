@@ -20,6 +20,7 @@
 
 <script setup lang="ts">
 import { defineEmits, computed } from 'vue'
+import { currencyToFlag } from '../currencyFlags'
 
 const { currency, amount } = defineProps<{
   currency: string
@@ -29,41 +30,6 @@ const { currency, amount } = defineProps<{
 const emit = defineEmits<{
   (e: 'update:amount', value: number): void
 }>()
-
-const currencyToFlag: { [key: string]: string } = {
-  USD: '🇺🇸',
-  EUR: '🇪🇺',
-  GBP: '🇬🇧',
-  JPY: '🇯🇵',
-  BGN: '🇧🇬',
-  CZK: '🇨🇿',
-  DKK: '🇩🇰',
-  HUF: '🇭🇺',
-  PLN: '🇵🇱',
-  RON: '🇷🇴',
-  SEK: '🇸🇪',
-  CHF: '🇨🇭',
-  NOK: '🇳🇴',
-  HRK: '🇭🇷',
-  RUB: '🇷🇺',
-  TRY: '🇹🇷',
-  AUD: '🇦🇺',
-  BRL: '🇧🇷',
-  CAD: '🇨🇦',
-  CNY: '🇨🇳',
-  HKD: '🇭🇰',
-  IDR: '🇮🇩',
-  ILS: '🇮🇱',
-  INR: '🇮🇳',
-  KRW: '🇰🇷',
-  MXN: '🇲🇽',
-  MYR: '🇲🇾',
-  NZD: '🇳🇿',
-  PHP: '🇵🇭',
-  SGD: '🇸🇬',
-  THB: '🇹🇭',
-  ZAR: '🇿🇦'
-}
 
 const formattedAmount = computed(() => {
   return new Intl.NumberFormat('en-US', {
