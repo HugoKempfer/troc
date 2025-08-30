@@ -10,16 +10,16 @@
 }
 
 @layer utilities {
-  .border-lavender-300 {
-    border-color: #E6E6FA;
+  .border-golden-300 {
+    border-color: #f3c969;
   }
-  .border-lavender-400 {
-    border-color: #D8BFD8;
+  .border-golden-400 {
+    border-color: #e5a50a;
   }
-  .bg-lavender-100 {
-    background-color: #f0f0ff;
+  .bg-golden-100 {
+    background-color: #fff8e6;
   }
-  .bg-lavender-900 {
-    background-color: #4b0082;
+  .bg-golden-900 {
+    background-color: #915c00;
   }
 }

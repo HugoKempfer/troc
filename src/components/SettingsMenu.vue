@@ -8,9 +8,9 @@
         class="flex flex-col items-center p-2 border-2 rounded"
         :class="[
           selectedCurrencies.includes(currency)
-            ? 'border-lavender-400 bg-lavender-100 dark:bg-lavender-900 text-gray-900 dark:text-gray-900'
+            ? 'border-golden-400 bg-golden-100 dark:bg-golden-900 text-gray-900 dark:text-gray-100'
             : 'border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300',
-          'hover:border-lavender-300 dark:hover:border-lavender-400'
+          'hover:border-golden-300 dark:hover:border-golden-400'
         ]"
         @click="toggleCurrency(currency)"
       >
@@ -86,10 +86,10 @@ const toggleCurrency = (currency: string) => {
 </script>
 
 <style scoped>
-.bg-lavender-100 {
-  background-color: #f0f0ff;
+.bg-golden-100 {
+  background-color: #fff8e6;
 }
-.bg-lavender-900 {
-  background-color: #4b0082;
+.bg-golden-900 {
+  background-color: #915c00;
 }
 </style>

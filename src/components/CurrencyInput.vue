@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex items-center bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4 transition-all duration-200 hover:border-lavender-300 focus-within:border-lavender-400 shadow-sm w-full"
+    class="flex items-center bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4 transition-all duration-200 hover:border-golden-300 focus-within:border-golden-400 shadow-sm w-full"
   >
     <span class="text-xl mr-3" :aria-label="currency + ' flag'">{{ currencyToFlag[currency] }}</span>
     <div class="flex-1">
