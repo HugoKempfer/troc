@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex items-center bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4 transition-all duration-200 hover:border-golden-300 focus-within:border-golden-400 shadow-sm w-full"
+    class="flex items-center bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4 transition-all duration-200 hover:border-golden-300 dark:hover:border-golden-500 focus-within:border-golden-400 dark:focus-within:border-golden-500 shadow-sm w-full"
   >
     <span class="text-xl mr-3" :aria-label="currency + ' flag'">{{ currencyToFlag[currency] }}</span>
     <div class="flex-1">
@@ -42,7 +42,14 @@ const formattedAmount = computed(() => {
 const handleInput = (event: Event) => {
   const target = event.target as HTMLInputElement
   if (target) {
-    const numericValue = Number(target.value.replace(/[^0-9.-]+/g, ''))
+    // Remove all non-numeric characters except first decimal point
+    let cleaned = target.value.replace(/[^0-9.]+/g, '')
+    // Keep only the first decimal point
+    const parts = cleaned.split('.')
+    if (parts.length > 2) {
+      cleaned = parts[0] + '.' + parts.slice(1).join('')
+    }
+    const numericValue = parseFloat(cleaned) || 0
     emit('update:amount', numericValue)
   }
 }

@@ -13,6 +13,7 @@ export const currencyToFlag: { [key: string]: string } = {
   CHF: '🇨🇭',
   NOK: '🇳🇴',
   HRK: '🇭🇷',
+  RUB: '🇷🇺',
   TRY: '🇹🇷',
   AUD: '🇦🇺',
   BRL: '🇧🇷',

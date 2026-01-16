@@ -8,9 +8,9 @@
         class="flex flex-col items-center p-2 border-2 rounded"
         :class="[
           selectedCurrencies.includes(currency)
-            ? 'border-golden-400 bg-golden-100 dark:bg-golden-900 text-gray-900 dark:text-gray-100'
-            : 'border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300',
-          'hover:border-golden-300 dark:hover:border-golden-400'
+            ? 'border-golden-400 dark:border-golden-500 bg-golden-100 dark:bg-golden-800 text-gray-900 dark:text-golden-100'
+            : 'border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300',
+          'hover:border-golden-300 dark:hover:border-golden-500'
         ]"
         @click="toggleCurrency(currency)"
       >
@@ -28,6 +28,7 @@
 </template>
 
 <script setup lang="ts">
+import { currencyToFlag } from '../currencyFlags'
 
 const props = defineProps<{
   selectedCurrencies: string[]
@@ -38,45 +39,12 @@ const emit = defineEmits<{
   (e: 'update-currencies', currencies: string[]): void
 }>()
 
-const currencyToFlag: { [key: string]: string } = {
-  USD: '🇺🇸',
-  EUR: '🇪🇺',
-  GBP: '🇬🇧',
-  JPY: '🇯🇵',
-  BGN: '🇧🇬',
-  CZK: '🇨🇿',
-  DKK: '🇩🇰',
-  HUF: '🇭🇺',
-  PLN: '🇵🇱',
-  RON: '🇷🇴',
-  SEK: '🇸🇪',
-  CHF: '🇨🇭',
-  NOK: '🇳🇴',
-  HRK: '🇭🇷',
-  RUB: '🇷🇺',
-  TRY: '🇹🇷',
-  AUD: '🇦🇺',
-  BRL: '🇧🇷',
-  CAD: '🇨🇦',
-  CNY: '🇨🇳',
-  HKD: '🇭🇰',
-  IDR: '🇮🇩',
-  ILS: '🇮🇱',
-  INR: '🇮🇳',
-  KRW: '🇰🇷',
-  MXN: '🇲🇽',
-  MYR: '🇲🇾',
-  NZD: '🇳🇿',
-  PHP: '🇵🇭',
-  SGD: '🇸🇬',
-  THB: '🇹🇭',
-  ZAR: '🇿🇦'
-}
-
 const toggleCurrency = (currency: string) => {
   const updatedCurrencies = [...props.selectedCurrencies]
   const index = updatedCurrencies.indexOf(currency)
   if (index > -1) {
+    // Prevent removing the last currency
+    if (updatedCurrencies.length <= 1) return
     updatedCurrencies.splice(index, 1)
   } else {
     updatedCurrencies.push(currency)
@@ -85,11 +53,3 @@ const toggleCurrency = (currency: string) => {
 }
 </script>
 
-<style scoped>
-.bg-golden-100 {
-  background-color: #fff8e6;
-}
-.bg-golden-900 {
-  background-color: #915c00;
-}
-</style>

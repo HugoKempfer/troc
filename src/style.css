@@ -16,10 +16,25 @@
   .border-golden-400 {
     border-color: #e5a50a;
   }
+  .border-golden-500 {
+    border-color: #c98f08;
+  }
+  .border-golden-600 {
+    border-color: #a67506;
+  }
   .bg-golden-100 {
     background-color: #fff8e6;
   }
+  .bg-golden-800 {
+    background-color: #7a5200;
+  }
   .bg-golden-900 {
-    background-color: #915c00;
+    background-color: #5c3d00;
+  }
+  .text-golden-100 {
+    color: #fff8e6;
+  }
+  .text-golden-200 {
+    color: #ffe9a8;
   }
 }

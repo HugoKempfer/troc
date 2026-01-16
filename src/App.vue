@@ -1,7 +1,6 @@
 <template>
   <div
-    class="p-6 flex flex-col items-center min-h-screen w-screen"
-    :class="['bg-gray-100', { 'dark:bg-gray-900': isDarkMode }]"
+    class="p-6 flex flex-col items-center min-h-screen w-screen bg-gray-100 dark:bg-gray-900"
   >
     <img src="/troc-512.png" alt="Troc Logo" class="mb-4 w-16 h-16 object-contain" />
     <div class="text-sm text-gray-500 dark:text-gray-400 mb-2 text-center">Last refreshed: {{ lastRefreshDate }}</div>
@@ -24,7 +23,7 @@
       </div>
     </transition>
     <ul class="mx-auto w-full max-w-md space-y-6 flex-grow overflow-y-auto">
-      <li v-for="currency in Object.keys(amounts)" :key="currency">
+      <li v-for="currency in selectedCurrencies" :key="currency">
         <CurrencyInput
           :currency="currency"
           :amount="amounts[currency]"
@@ -37,7 +36,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import axios from 'axios'
 import CurrencyInput from './components/CurrencyInput.vue'
 import SettingsMenu from './components/SettingsMenu.vue'
@@ -76,15 +75,35 @@ const updateTheme = () => {
   document.documentElement.style.colorScheme = isDarkMode.value ? 'dark' : 'light'
 }
 
+const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
+
+const isSameDay = (timestamp: number): boolean => {
+  const cached = new Date(timestamp)
+  const now = new Date()
+  return (
+    cached.getFullYear() === now.getFullYear() &&
+    cached.getMonth() === now.getMonth() &&
+    cached.getDate() === now.getDate()
+  )
+}
+
+const safeParseJSON = <T>(json: string | null, fallback: T): T => {
+  if (!json) return fallback
+  try {
+    return JSON.parse(json) as T
+  } catch {
+    return fallback
+  }
+}
+
 onMounted(async () => {
   updateTheme()
-  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', updateTheme)
+  mediaQuery.addEventListener('change', updateTheme)
 
   const cached = localStorage.getItem('troc-rates')
-  const today = new Date().toLocaleDateString()
-  let cachedData = cached ? (JSON.parse(cached) as { rates: Rates; timestamp: number }) : null
+  let cachedData = safeParseJSON<{ rates: Rates; timestamp: number } | null>(cached, null)
 
-  if (cachedData && new Date(cachedData.timestamp).toLocaleDateString() === today) {
+  if (cachedData && isSameDay(cachedData.timestamp)) {
     rates.value = cachedData.rates
     lastFetchTimestamp.value = cachedData.timestamp
   } else {
@@ -109,8 +128,12 @@ onMounted(async () => {
 
   // Load or set default selected currencies
   const savedCurrencies = localStorage.getItem('selectedCurrencies')
-  selectedCurrencies.value = savedCurrencies ? JSON.parse(savedCurrencies) : ['EUR', 'USD', 'KRW']
+  selectedCurrencies.value = safeParseJSON<string[]>(savedCurrencies, ['EUR', 'USD', 'KRW'])
   updateAmounts()
+})
+
+onUnmounted(() => {
+  mediaQuery.removeEventListener('change', updateTheme)
 })
 
 const updateCurrencies = (currencies: string[]) => {
