@@ -3,13 +3,17 @@ import en from './locales/en.json'
 import fr from './locales/fr.json'
 import ko from './locales/ko.json'
 
-const supportedLocales = ['en', 'fr', 'ko'] as const
+export const supportedLocales = [
+  { code: 'en', label: 'EN' },
+  { code: 'fr', label: 'FR' },
+  { code: 'ko', label: '한' }
+] as const
 
 function detectLocale(): string {
+  const saved = localStorage.getItem('troc-locale')
+  if (saved && supportedLocales.some(l => l.code === saved)) return saved
   const browserLang = navigator.language.split('-')[0]
-  if (supportedLocales.includes(browserLang as typeof supportedLocales[number])) {
-    return browserLang
-  }
+  if (supportedLocales.some(l => l.code === browserLang)) return browserLang
   return 'en'
 }
 

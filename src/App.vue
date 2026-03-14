@@ -5,10 +5,23 @@
     <img src="/troc-512.png" alt="Troc Logo" class="mb-4 w-16 h-16 object-contain" />
     <div class="text-sm text-gray-500 dark:text-gray-400 mb-2 text-center">{{ $t('lastRefreshed') }}{{ lastRefreshDate }}</div>
     <h1 class="text-3xl font-extrabold mb-8 text-gray-900 dark:text-gray-100 text-center">{{ $t('title') }}</h1>
-    <span
-      class="absolute top-6 right-6 text-2xl cursor-pointer text-gray-600 dark:text-gray-300"
-      @click="showSettings = !showSettings"
+    <div class="absolute top-6 right-6 flex items-center gap-3">
+      <div class="flex rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700">
+        <button
+          v-for="loc in supportedLocales"
+          :key="loc.code"
+          class="px-2 py-1 text-sm font-medium transition-colors"
+          :class="locale === loc.code
+            ? 'bg-golden-400 dark:bg-golden-600 text-white'
+            : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'"
+          @click="changeLocale(loc.code)"
+        >{{ loc.label }}</button>
+      </div>
+      <span
+        class="text-2xl cursor-pointer text-gray-600 dark:text-gray-300"
+        @click="showSettings = !showSettings"
       >⚙️</span>
+    </div>
     <transition name="fade">
       <div
         v-if="showSettings"
@@ -41,6 +54,7 @@ import { useI18n } from 'vue-i18n'
 import axios from 'axios'
 import CurrencyInput from './components/CurrencyInput.vue'
 import SettingsMenu from './components/SettingsMenu.vue'
+import { supportedLocales } from './i18n'
 
 interface Rates {
   [key: string]: number
@@ -59,6 +73,11 @@ const showSettings = ref(false)
 const selectedCurrencies = ref<string[]>([])
 
 const { t, locale } = useI18n()
+
+const changeLocale = (code: string) => {
+  locale.value = code
+  localStorage.setItem('troc-locale', code)
+}
 
 const lastRefreshDate = computed((): string => {
   if (!lastFetchTimestamp.value) return t('never')
