@@ -1,0 +1,10 @@
+{
+  "lastRefreshed": "Dernière maj : ",
+  "title": "Troc - Convertisseur de devises",
+  "never": "Jamais",
+  "errorNoCache": "Impossible de récupérer les taux et aucun cache disponible.",
+  "errorCachedFallback": "Utilisation des taux en cache suite à un échec de récupération.",
+  "currencyAmount": "Montant en devise",
+  "selectCurrencies": "Sélectionner les devises",
+  "close": "Fermer"
+}

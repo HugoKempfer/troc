@@ -1,6 +1,6 @@
 <template>
   <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-lg w-full max-w-xs sm:max-w-sm md:max-w-md" style="max-height: 90vh; overflow-y: auto;">
-    <h2 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">Select Currencies</h2>
+    <h2 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">{{ $t('selectCurrencies') }}</h2>
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
       <button
         v-for="currency in Object.keys(currencyToFlag)"
@@ -16,13 +16,14 @@
       >
         <span class="text-xl mb-1">{{ currencyToFlag[currency] }}</span>
         <span class="text-sm">{{ currency }}</span>
+        <span v-if="$te(`currencies.${currency}`)" class="text-xs text-gray-400 dark:text-gray-500">{{ $t(`currencies.${currency}`) }}</span>
       </button>
     </div>
     <button
       class="mt-4 w-full py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded hover:bg-gray-300 dark:hover:bg-gray-600"
       @click="$emit('close')"
     >
-      Close
+      {{ $t('close') }}
     </button>
   </div>
 </template>

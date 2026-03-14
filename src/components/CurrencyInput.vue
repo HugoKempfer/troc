@@ -11,15 +11,19 @@
         @input="handleInput($event)"
         class="w-full text-2xl font-medium text-gray-800 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500 bg-transparent border-none focus:outline-none focus:ring-0 appearance-none"
         :placeholder="currency"
-        aria-label="Currency amount"
+        :aria-label="$t('currencyAmount')"
       />
     </div>
-    <span class="text-2xl font-semibold text-gray-600 dark:text-gray-300">{{ currency }}</span>
+    <div class="text-right">
+      <span class="text-2xl font-semibold text-gray-600 dark:text-gray-300">{{ currency }}</span>
+      <div v-if="$te(`currencies.${currency}`)" class="text-xs text-gray-400 dark:text-gray-500">{{ $t(`currencies.${currency}`) }}</div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { defineEmits, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { currencyToFlag } from '../currencyFlags'
 
 const { currency, amount } = defineProps<{
@@ -31,8 +35,10 @@ const emit = defineEmits<{
   (e: 'update:amount', value: number): void
 }>()
 
+const { locale } = useI18n()
+
 const formattedAmount = computed(() => {
-  return new Intl.NumberFormat('en-US', {
+  return new Intl.NumberFormat(locale.value, {
     minimumFractionDigits: 0,
     maximumFractionDigits: 2,
     useGrouping: true

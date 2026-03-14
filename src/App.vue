@@ -3,8 +3,8 @@
     class="p-6 flex flex-col items-center min-h-screen w-screen bg-gray-100 dark:bg-gray-900"
   >
     <img src="/troc-512.png" alt="Troc Logo" class="mb-4 w-16 h-16 object-contain" />
-    <div class="text-sm text-gray-500 dark:text-gray-400 mb-2 text-center">Last refreshed: {{ lastRefreshDate }}</div>
-    <h1 class="text-3xl font-extrabold mb-8 text-gray-900 dark:text-gray-100 text-center">Troc - Currency Converter</h1>
+    <div class="text-sm text-gray-500 dark:text-gray-400 mb-2 text-center">{{ $t('lastRefreshed') }}{{ lastRefreshDate }}</div>
+    <h1 class="text-3xl font-extrabold mb-8 text-gray-900 dark:text-gray-100 text-center">{{ $t('title') }}</h1>
     <span
       class="absolute top-6 right-6 text-2xl cursor-pointer text-gray-600 dark:text-gray-300"
       @click="showSettings = !showSettings"
@@ -37,6 +37,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 import axios from 'axios'
 import CurrencyInput from './components/CurrencyInput.vue'
 import SettingsMenu from './components/SettingsMenu.vue'
@@ -57,15 +58,16 @@ const isDarkMode = ref(false)
 const showSettings = ref(false)
 const selectedCurrencies = ref<string[]>([])
 
+const { t, locale } = useI18n()
+
 const lastRefreshDate = computed((): string => {
-  if (!lastFetchTimestamp.value) return 'Never'
-  return new Date(lastFetchTimestamp.value).toLocaleString('en-US', {
+  if (!lastFetchTimestamp.value) return t('never')
+  return new Date(lastFetchTimestamp.value).toLocaleString(locale.value, {
     day: 'numeric',
     month: 'short',
     year: 'numeric',
     hour: '2-digit',
-    minute: '2-digit',
-    hour12: true
+    minute: '2-digit'
   })
 })
 
@@ -117,11 +119,11 @@ onMounted(async () => {
       )
     } catch (err) {
       if (!cachedData) {
-        error.value = 'Failed to fetch rates and no cache available.'
+        error.value = t('errorNoCache')
       } else {
         rates.value = cachedData.rates
         lastFetchTimestamp.value = cachedData.timestamp
-        error.value = 'Using cached rates due to fetch failure.'
+        error.value = t('errorCachedFallback')
       }
     }
   }

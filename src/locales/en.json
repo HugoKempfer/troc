@@ -1,0 +1,10 @@
+{
+  "lastRefreshed": "Last refreshed: ",
+  "title": "Troc - Currency Converter",
+  "never": "Never",
+  "errorNoCache": "Failed to fetch rates and no cache available.",
+  "errorCachedFallback": "Using cached rates due to fetch failure.",
+  "currencyAmount": "Currency amount",
+  "selectCurrencies": "Select Currencies",
+  "close": "Close"
+}
