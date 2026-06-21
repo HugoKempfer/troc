@@ -67,16 +67,19 @@
       </div>
     </transition>
 
-    <!-- Currency list -->
-    <ul class="mx-auto w-full max-w-md flex-grow space-y-4 overflow-y-auto">
-      <li v-for="currency in selectedCurrencies" :key="currency">
-        <CurrencyInput
-          :currency="currency"
-          :amount="amounts[currency]"
-          @update:amount="handleAmountChange(currency, $event)"
-        />
-      </li>
-    </ul>
+    <!-- Currency list: centered in the remaining space for thumb reach.
+         m-auto (not justify-center) keeps it scroll-safe when the list is tall. -->
+    <div class="mx-auto flex w-full max-w-md flex-1 flex-col overflow-y-auto">
+      <ul class="m-auto w-full space-y-4 py-4">
+        <li v-for="currency in selectedCurrencies" :key="currency">
+          <CurrencyInput
+            :currency="currency"
+            :amount="amounts[currency]"
+            @update:amount="handleAmountChange(currency, $event)"
+          />
+        </li>
+      </ul>
+    </div>
 
     <div v-if="error" class="mt-6 text-center text-lg text-red-500 dark:text-red-400">
       {{ error }}
