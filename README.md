@@ -17,7 +17,7 @@ An open-source Progressive Web App (PWA) for currency conversion.
 - **Installable**: Add to your home screen as a PWA.
 
 ## Data Source
-Exchange rates are sourced from the [Frankfurter API](https://www.frankfurter.app/docs/), a free, open-source service that leverages data from the European Central Bank (ECB). Rates are updated daily (typically at midnight UTC) and cached in Troc for 24 hours, supporting conversions between approximately 32 currencies (e.g., USD, EUR, KRW). The API is reliable for general use but limited to daily updates, not real-time, and may be subject to occasional downtime or rate limits for free users.
+Exchange rates are sourced from the [Frankfurter API](https://frankfurter.dev/), a free, open-source service that leverages data from the European Central Bank (ECB). Rates are updated daily (typically at midnight UTC) and cached in Troc for 24 hours, supporting conversions between approximately 32 currencies (e.g., USD, EUR, KRW). The API is reliable for general use but limited to daily updates, not real-time, and may be subject to occasional downtime or rate limits for free users.
 
 ## Tech Stack
 - [Vue 3](https://vuejs.org/) (`<script setup>`) + [TypeScript](https://www.typescriptlang.org/)

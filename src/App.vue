@@ -104,7 +104,7 @@ interface CachedRates {
 // ECB publishes rates roughly once per business day. Refetch when the cache is
 // older than this; always fall back to cache on a failed fetch (offline-safe).
 const MAX_CACHE_AGE_MS = 12 * 60 * 60 * 1000
-const API_URL = 'https://api.frankfurter.app/latest'
+const API_URL = 'https://api.frankfurter.dev/v1/latest'
 const DEFAULT_CURRENCIES = ['EUR', 'USD', 'KRW']
 
 const rates = ref<Rates>({})

@@ -6,9 +6,12 @@ import { VitePWA } from 'vite-plugin-pwa'
 // https://vite.dev/config/
 export default defineConfig({
   base: '/troc/',
-  plugins: [vue(), tailwindcss(),
+  plugins: [
+    vue(),
+    tailwindcss(),
     VitePWA({
       registerType: 'autoUpdate',
+      injectRegister: false, // registered manually in main.ts (with update checks)
       manifest: {
         name: 'Troc - Currency Converter',
         short_name: 'Troc',
@@ -19,30 +22,36 @@ export default defineConfig({
             src: 'maskable_icon_x192.png',
             sizes: '192x192',
             type: 'image/png',
-            purpose: 'maskable'
+            purpose: 'maskable',
           },
           {
             src: 'maskable_icon_x512.png',
             sizes: '512x512',
             type: 'image/png',
-            purpose: 'maskable'
-          }
-        ]
+            purpose: 'maskable',
+          },
+        ],
       },
       workbox: {
+        cleanupOutdatedCaches: true,
         runtimeCaching: [
           {
-            urlPattern: /^https:\/\/api\.frankfurter\.app\/.*/,
-            handler: 'CacheFirst',
+            urlPattern: /^https:\/\/api\.frankfurter\.dev\/.*/,
+            // Prefer fresh rates; fall back to cache when offline or slow.
+            handler: 'NetworkFirst',
             options: {
               cacheName: 'troc-rates',
+              networkTimeoutSeconds: 5,
               expiration: {
-                maxAgeSeconds: 24 * 60 * 60 // 1 day
-              }
-            }
-          }
-        ]
-      }
-    })
+                maxAgeSeconds: 24 * 60 * 60, // 1 day
+              },
+              cacheableResponse: {
+                statuses: [0, 200],
+              },
+            },
+          },
+        ],
+      },
+    }),
   ],
 })
