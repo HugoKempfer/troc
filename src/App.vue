@@ -2,16 +2,8 @@
   <div
     class="flex min-h-screen w-full flex-col items-center bg-gradient-to-b from-gray-50 to-gray-100 px-4 pb-8 pt-4 dark:from-gray-900 dark:to-gray-950"
   >
-    <!-- Top bar -->
-    <header class="flex w-full max-w-md items-center justify-between gap-2">
-      <div class="flex min-w-0 items-center gap-2">
-        <img src="/troc-512.png" alt="" class="h-8 w-8 shrink-0 object-contain drop-shadow-sm" />
-        <span
-          class="bg-gradient-to-r from-golden-500 to-golden-400 bg-clip-text text-xl font-extrabold tracking-tight text-transparent"
-        >
-          Troc
-        </span>
-      </div>
+    <!-- Top bar: controls only; the brand lives in the hero below -->
+    <header class="flex w-full max-w-md items-center justify-end gap-2">
       <div class="flex shrink-0 items-center gap-2">
         <div
           class="flex overflow-hidden rounded-lg border border-gray-200 shadow-sm dark:border-gray-700"
@@ -46,9 +38,6 @@
     </header>
 
     <h1 class="sr-only">{{ $t('title') }}</h1>
-    <p class="mb-5 mt-3 text-center text-xs text-gray-500 dark:text-gray-400">
-      {{ $t('lastRefreshed') }}{{ lastRefreshDate }}
-    </p>
 
     <!-- Settings modal -->
     <transition name="fade">
@@ -67,18 +56,36 @@
       </div>
     </transition>
 
-    <!-- Currency list: centered in the remaining space for thumb reach.
-         m-auto (not justify-center) keeps it scroll-safe when the list is tall. -->
+    <!-- Brand hero + currency list, centered together in the remaining space.
+         The logo grows to use the empty space when few currencies are shown;
+         m-auto (not justify-center) keeps the group scroll-safe when tall. -->
     <div class="mx-auto flex w-full max-w-md flex-1 flex-col overflow-y-auto">
-      <ul class="m-auto w-full space-y-4 py-4">
-        <li v-for="currency in selectedCurrencies" :key="currency">
-          <CurrencyInput
-            :currency="currency"
-            :amount="amounts[currency]"
-            @update:amount="handleAmountChange(currency, $event)"
+      <div class="m-auto w-full py-4">
+        <div class="mb-8 flex flex-col items-center gap-2">
+          <img
+            src="/troc-512.png"
+            alt=""
+            class="h-20 w-20 object-contain drop-shadow-md sm:h-24 sm:w-24"
           />
-        </li>
-      </ul>
+          <span
+            class="bg-gradient-to-r from-golden-500 to-golden-400 bg-clip-text text-2xl font-extrabold tracking-tight text-transparent"
+          >
+            Troc
+          </span>
+          <p class="text-xs text-gray-500 dark:text-gray-400">
+            {{ $t('lastRefreshed') }}{{ lastRefreshDate }}
+          </p>
+        </div>
+        <ul class="w-full space-y-4">
+          <li v-for="currency in selectedCurrencies" :key="currency">
+            <CurrencyInput
+              :currency="currency"
+              :amount="amounts[currency]"
+              @update:amount="handleAmountChange(currency, $event)"
+            />
+          </li>
+        </ul>
+      </div>
     </div>
 
     <div v-if="error" class="mt-6 text-center text-lg text-red-500 dark:text-red-400">
