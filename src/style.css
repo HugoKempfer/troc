@@ -1,40 +1,26 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
-@import "tailwindcss";
+@import 'tailwindcss';
 
+/* Golden brand palette — defined once as a Tailwind v4 theme so every
+   utility (bg-/text-/border-golden-*) and opacity modifier is generated. */
+@theme {
+  --color-golden-50: #fffaeb;
+  --color-golden-100: #fff3c4;
+  --color-golden-200: #ffe9a8;
+  --color-golden-300: #f3c969;
+  --color-golden-400: #e5a50a;
+  --color-golden-500: #c98f08;
+  --color-golden-600: #a67506;
+  --color-golden-700: #855d05;
+  --color-golden-800: #7a5200;
+  --color-golden-900: #5c3d00;
+}
 
 @layer base {
   body {
     font-family: 'Inter', sans-serif;
-  }
-}
-
-@layer utilities {
-  .border-golden-300 {
-    border-color: #f3c969;
-  }
-  .border-golden-400 {
-    border-color: #e5a50a;
-  }
-  .border-golden-500 {
-    border-color: #c98f08;
-  }
-  .border-golden-600 {
-    border-color: #a67506;
-  }
-  .bg-golden-100 {
-    background-color: #fff8e6;
-  }
-  .bg-golden-800 {
-    background-color: #7a5200;
-  }
-  .bg-golden-900 {
-    background-color: #5c3d00;
-  }
-  .text-golden-100 {
-    color: #fff8e6;
-  }
-  .text-golden-200 {
-    color: #ffe9a8;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
   }
 }

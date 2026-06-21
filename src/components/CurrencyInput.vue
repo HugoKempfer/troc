@@ -1,30 +1,34 @@
 <template>
   <div
-    class="flex items-center bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4 transition-all duration-200 hover:border-golden-300 dark:hover:border-golden-500 focus-within:border-golden-400 dark:focus-within:border-golden-500 shadow-sm w-full"
+    class="flex items-center rounded-xl border border-gray-200 bg-white p-4 shadow-sm transition-all duration-200 hover:border-golden-300 focus-within:border-golden-400 focus-within:ring-2 focus-within:ring-golden-400/20 dark:border-gray-700 dark:bg-gray-800 dark:hover:border-golden-500 dark:focus-within:border-golden-500"
   >
-    <span class="text-xl mr-3" :aria-label="currency + ' flag'">{{ currencyToFlag[currency] }}</span>
+    <span class="mr-3 text-xl" :aria-label="currency + ' flag'">{{
+      currencyToFlag[currency]
+    }}</span>
     <div class="flex-1">
       <input
-        inputmode="numeric"
-        pattern="[0-9]*"
+        inputmode="decimal"
         :value="formattedAmount"
         @input="handleInput($event)"
-        class="w-full text-2xl font-medium text-gray-800 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500 bg-transparent border-none focus:outline-none focus:ring-0 appearance-none"
-        :placeholder="currency"
+        class="w-full appearance-none border-none bg-transparent text-2xl font-medium text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-0 dark:text-gray-200 dark:placeholder-gray-500"
+        placeholder="0"
         :aria-label="$t('currencyAmount')"
       />
     </div>
     <div class="text-right">
       <span class="text-2xl font-semibold text-gray-600 dark:text-gray-300">{{ currency }}</span>
-      <div v-if="$te(`currencies.${currency}`)" class="text-xs text-gray-400 dark:text-gray-500">{{ $t(`currencies.${currency}`) }}</div>
+      <div v-if="$te(`currencyNames.${currency}`)" class="text-xs text-gray-400 dark:text-gray-500">
+        {{ $t(`currencyNames.${currency}`) }}
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { defineEmits, computed } from 'vue'
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { currencyToFlag } from '../currencyFlags'
+import { formatAmount } from '../currency'
 
 const { currency, amount } = defineProps<{
   currency: string
@@ -37,27 +41,19 @@ const emit = defineEmits<{
 
 const { locale } = useI18n()
 
-const formattedAmount = computed(() => {
-  return new Intl.NumberFormat(locale.value, {
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 2,
-    useGrouping: true
-  }).format(amount)
-})
+const formattedAmount = computed(() => formatAmount(amount, currency, locale.value))
 
 const handleInput = (event: Event) => {
   const target = event.target as HTMLInputElement
-  if (target) {
-    // Remove all non-numeric characters except first decimal point
-    let cleaned = target.value.replace(/[^0-9.]+/g, '')
-    // Keep only the first decimal point
-    const parts = cleaned.split('.')
-    if (parts.length > 2) {
-      cleaned = parts[0] + '.' + parts.slice(1).join('')
-    }
-    const numericValue = parseFloat(cleaned) || 0
-    emit('update:amount', numericValue)
+  if (!target) return
+  // Strip everything but digits and decimal points, then keep only the first point.
+  let cleaned = target.value.replace(/[^0-9.]+/g, '')
+  const parts = cleaned.split('.')
+  if (parts.length > 2) {
+    cleaned = parts[0] + '.' + parts.slice(1).join('')
   }
+  const numericValue = parseFloat(cleaned) || 0
+  emit('update:amount', numericValue)
 }
 </script>
 

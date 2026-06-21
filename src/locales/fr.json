@@ -6,6 +6,9 @@
   "errorCachedFallback": "Utilisation des taux en cache suite à un échec de récupération.",
   "currencyAmount": "Montant en devise",
   "selectCurrencies": "Sélectionner les devises",
+  "searchCurrencies": "Rechercher des devises…",
+  "noResults": "Aucune devise correspondante",
+  "language": "Langue",
   "close": "Fermer",
   "currencyNames": {
     "USD": "Dollar américain",

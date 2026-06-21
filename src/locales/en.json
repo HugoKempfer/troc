@@ -6,6 +6,9 @@
   "errorCachedFallback": "Using cached rates due to fetch failure.",
   "currencyAmount": "Currency amount",
   "selectCurrencies": "Select Currencies",
+  "searchCurrencies": "Search currencies…",
+  "noResults": "No matching currencies",
+  "language": "Language",
   "close": "Close",
   "currencyNames": {
     "USD": "US Dollar",

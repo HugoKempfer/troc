@@ -30,5 +30,5 @@ export const currencyToFlag: { [key: string]: string } = {
   PHP: '🇵🇭',
   SGD: '🇸🇬',
   THB: '🇹🇭',
-  ZAR: '🇿🇦'
+  ZAR: '🇿🇦',
 }
