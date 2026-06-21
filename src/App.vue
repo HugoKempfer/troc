@@ -1,52 +1,52 @@
 <template>
   <div
-    class="relative flex min-h-screen w-full flex-col items-center bg-gradient-to-b from-gray-50 to-gray-100 px-6 pb-10 pt-6 dark:from-gray-900 dark:to-gray-950"
+    class="flex min-h-screen w-full flex-col items-center bg-gradient-to-b from-gray-50 to-gray-100 px-4 pb-8 pt-4 dark:from-gray-900 dark:to-gray-950"
   >
-    <!-- Top controls -->
-    <div class="absolute right-6 top-6 flex items-center gap-3">
-      <div
-        class="flex overflow-hidden rounded-lg border border-gray-200 shadow-sm dark:border-gray-700"
-        role="group"
-        :aria-label="$t('language')"
-      >
-        <button
-          v-for="loc in supportedLocales"
-          :key="loc.code"
-          type="button"
-          class="px-2.5 py-1 text-sm font-semibold transition-colors"
-          :class="
-            locale === loc.code
-              ? 'bg-golden-400 text-white dark:bg-golden-600'
-              : 'bg-white text-gray-600 hover:bg-gray-100 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700'
-          "
-          :aria-pressed="locale === loc.code"
-          @click="changeLocale(loc.code)"
+    <!-- Top bar -->
+    <header class="flex w-full max-w-md items-center justify-between gap-2">
+      <div class="flex min-w-0 items-center gap-2">
+        <img src="/troc-512.png" alt="" class="h-8 w-8 shrink-0 object-contain drop-shadow-sm" />
+        <span
+          class="bg-gradient-to-r from-golden-500 to-golden-400 bg-clip-text text-xl font-extrabold tracking-tight text-transparent"
         >
-          {{ loc.label }}
+          Troc
+        </span>
+      </div>
+      <div class="flex shrink-0 items-center gap-2">
+        <div
+          class="flex overflow-hidden rounded-lg border border-gray-200 shadow-sm dark:border-gray-700"
+          role="group"
+          :aria-label="$t('language')"
+        >
+          <button
+            v-for="loc in supportedLocales"
+            :key="loc.code"
+            type="button"
+            class="px-2 py-1 text-xs font-semibold transition-colors"
+            :class="
+              locale === loc.code
+                ? 'bg-golden-400 text-white dark:bg-golden-600'
+                : 'bg-white text-gray-600 hover:bg-gray-100 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700'
+            "
+            :aria-pressed="locale === loc.code"
+            @click="changeLocale(loc.code)"
+          >
+            {{ loc.label }}
+          </button>
+        </div>
+        <button
+          type="button"
+          class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-gray-200 bg-white text-base shadow-sm transition-colors hover:bg-gray-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-golden-400 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700"
+          :aria-label="$t('selectCurrencies')"
+          @click="showSettings = true"
+        >
+          ⚙️
         </button>
       </div>
-      <button
-        type="button"
-        class="flex h-9 w-9 items-center justify-center rounded-lg border border-gray-200 bg-white text-xl shadow-sm transition-colors hover:bg-gray-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-golden-400 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700"
-        :aria-label="$t('selectCurrencies')"
-        @click="showSettings = true"
-      >
-        ⚙️
-      </button>
-    </div>
+    </header>
 
-    <!-- Header -->
-    <img
-      src="/troc-512.png"
-      alt="Troc Logo"
-      class="mb-4 mt-2 h-16 w-16 object-contain drop-shadow-sm"
-    />
-    <h1
-      class="mb-1 bg-gradient-to-r from-golden-500 to-golden-400 bg-clip-text text-3xl font-extrabold text-transparent"
-    >
-      {{ $t('title') }}
-    </h1>
-    <p class="mb-8 text-sm text-gray-500 dark:text-gray-400">
+    <h1 class="sr-only">{{ $t('title') }}</h1>
+    <p class="mb-5 mt-3 text-center text-xs text-gray-500 dark:text-gray-400">
       {{ $t('lastRefreshed') }}{{ lastRefreshDate }}
     </p>
 
@@ -147,38 +147,44 @@ const onKeydown = (e: KeyboardEvent) => {
   if (e.key === 'Escape' && showSettings.value) showSettings.value = false
 }
 
-onMounted(async () => {
+const loadRates = async () => {
+  const cached = readJSON<CachedRates | null>(STORAGE_KEYS.rates, null)
+  if (cached && Date.now() - cached.timestamp < MAX_CACHE_AGE_MS) {
+    rates.value = normalizeRates(cached.rates)
+    lastFetchTimestamp.value = cached.timestamp
+    return
+  }
+  try {
+    // Abort a hung request rather than leaving the UI waiting indefinitely.
+    const controller = new AbortController()
+    const timer = setTimeout(() => controller.abort(), 8000)
+    const response = await fetch(API_URL, { signal: controller.signal })
+    clearTimeout(timer)
+    if (!response.ok) throw new Error(`HTTP ${response.status}`)
+    const data = await response.json()
+    rates.value = normalizeRates(data.rates)
+    lastFetchTimestamp.value = Date.now()
+    writeJSON(STORAGE_KEYS.rates, { rates: rates.value, timestamp: lastFetchTimestamp.value })
+  } catch {
+    if (!cached) {
+      error.value = t('errorNoCache')
+    } else {
+      rates.value = normalizeRates(cached.rates)
+      lastFetchTimestamp.value = cached.timestamp
+      error.value = t('errorCachedFallback')
+    }
+  }
+}
+
+onMounted(() => {
   updateTheme()
   mediaQuery.addEventListener('change', updateTheme)
   window.addEventListener('keydown', onKeydown)
 
-  const cached = readJSON<CachedRates | null>(STORAGE_KEYS.rates, null)
-  const isFresh = cached && Date.now() - cached.timestamp < MAX_CACHE_AGE_MS
-
-  if (cached && isFresh) {
-    rates.value = normalizeRates(cached.rates)
-    lastFetchTimestamp.value = cached.timestamp
-  } else {
-    try {
-      const response = await fetch(API_URL)
-      if (!response.ok) throw new Error(`HTTP ${response.status}`)
-      const data = await response.json()
-      rates.value = normalizeRates(data.rates)
-      lastFetchTimestamp.value = Date.now()
-      writeJSON(STORAGE_KEYS.rates, { rates: rates.value, timestamp: lastFetchTimestamp.value })
-    } catch {
-      if (!cached) {
-        error.value = t('errorNoCache')
-      } else {
-        rates.value = normalizeRates(cached.rates)
-        lastFetchTimestamp.value = cached.timestamp
-        error.value = t('errorCachedFallback')
-      }
-    }
-  }
-
+  // Render the currency rows immediately, then fill in rates asynchronously.
   selectedCurrencies.value = readJSON<string[]>(STORAGE_KEYS.currencies, DEFAULT_CURRENCIES)
   updateAmounts()
+  loadRates()
 })
 
 onUnmounted(() => {
